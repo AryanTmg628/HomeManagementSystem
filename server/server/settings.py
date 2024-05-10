@@ -10,7 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from os import getenv
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+# loading all the env variables
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "door_lock",
 ]
 
 MIDDLEWARE = [
@@ -76,8 +83,12 @@ WSGI_APPLICATION = "server.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": getenv("DATABASE_NAME"),
+        "USER": getenv("DATABASE_USER"),
+        "PASSWORD": getenv("DATABASE_PASSWORD"),
+        "HOST": getenv("DATABASE_HOST"),
+        "PORT": getenv("DATABASE_PORT"),
     }
 }
 
