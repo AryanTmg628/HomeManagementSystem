@@ -1,5 +1,6 @@
 import json
 
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -20,6 +21,7 @@ class DoorLockViewSet(ViewSet):
 
     query_set = DoorLock.objects.all()
     serializer = DoorLockSerializer
+    authentication_classes = []
 
     def create(self, request: Request) -> Response:
         """
@@ -57,3 +59,30 @@ class DoorLockViewSet(ViewSet):
         except AssertionError as e:
             print(f"Error while fetching door lock :-> {e}")
             return cr.error(message="Error while fetching the doorlock informations")
+
+    @action(detail=True, methods=["post"])
+    def lock_authentication(self, request: Request, pk: int) -> Response:
+        try:
+            door_detail = DoorLock.objects.get(rfid=pk)
+            password = int(request.data["password"])
+
+            if door_detail.password != password:
+                return cr.error(message="Invalid Password.")
+            serializer = self.serializer(data=door_detail, context={"action": "view"})
+            serializer.is_valid()
+            return cr.success(
+                message="Successfully fetched all doorlock users",
+                data=json.loads(json.dumps(serializer.data)),
+            )
+        except DoorLock.DoesNotExist:
+            return cr.error(message="This rfid doesn't exist.")
+
+        except ValueError:
+            return cr.error(message="Password must be integer.")
+
+        except KeyError:
+            return cr.error(message="Please pass password.")
+
+        except AssertionError as e:
+            print(f"Error while fetching door lock detail :-> {e}")
+            return cr.error(message="Error while fetching the doorlock detail")
