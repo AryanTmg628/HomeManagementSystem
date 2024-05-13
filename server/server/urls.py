@@ -21,4 +21,5 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("door-lock/", include("door_lock.urls")),
+    path("auth/", include("authentication.urls")),
 ]
