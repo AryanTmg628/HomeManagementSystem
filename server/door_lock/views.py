@@ -49,7 +49,8 @@ class DoorLockViewSet(ViewSet):
         """
         try:
             serializer = self.serializer(
-                data=self.query_set, many=True, context={"action": "view"}
+                data=self.query_set,
+                many=True,
             )
             serializer.is_valid()
             return cr.success(
@@ -60,15 +61,12 @@ class DoorLockViewSet(ViewSet):
             print(f"Error while fetching door lock :-> {e}")
             return cr.error(message="Error while fetching the doorlock informations")
 
-    @action(detail=True, methods=["post"])
-    def lock_authentication(self, request: Request, pk: int) -> Response:
+    def retrieve(self, request: Request, pk: int) -> Response:
         try:
             door_detail = DoorLock.objects.get(rfid=pk)
-            password = int(request.data["password"])
-
-            if door_detail.password != password:
-                return cr.error(message="Invalid Password.")
-            serializer = self.serializer(data=door_detail, context={"action": "view"})
+            serializer = self.serializer(
+                data=door_detail,
+            )
             serializer.is_valid()
             return cr.success(
                 message="Successfully fetched all doorlock users",
@@ -76,12 +74,6 @@ class DoorLockViewSet(ViewSet):
             )
         except DoorLock.DoesNotExist:
             return cr.error(message="This rfid doesn't exist.")
-
-        except ValueError:
-            return cr.error(message="Password must be integer.")
-
-        except KeyError:
-            return cr.error(message="Please pass password.")
 
         except AssertionError as e:
             print(f"Error while fetching door lock detail :-> {e}")
