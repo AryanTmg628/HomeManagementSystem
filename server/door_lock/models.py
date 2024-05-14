@@ -11,9 +11,6 @@ class DoorLock(models.Model):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
     rfid = models.CharField(unique=True, blank=False, max_length=50)
-    password = models.IntegerField(
-        validators=[MinValueValidator(0000), MaxValueValidator(9999)]
-    )
 
     def get_full_name(self):
         """
