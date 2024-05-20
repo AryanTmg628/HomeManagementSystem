@@ -1,4 +1,9 @@
 
 venv/
+Pipfile
 .env
-__pycache__
+/media/
+__pycache__/
+migrations/
+/static/
+db.sqlite3
