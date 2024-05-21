@@ -4,6 +4,5 @@ Pipfile
 .env
 /media/
 __pycache__/
-migrations/
 /static/
 db.sqlite3
