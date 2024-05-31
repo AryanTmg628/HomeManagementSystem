@@ -10,6 +10,7 @@ urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path('api/auth/',include('authentication.urls')),
     path('api/',include('journal.urls')),
+    path('api/',include('portfolio.urls')),
 ]
 
 
