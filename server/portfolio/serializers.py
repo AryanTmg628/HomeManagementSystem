@@ -11,12 +11,6 @@ from rest_framework import serializers
 
 
 
-
-
-
-
-
-
 # ! Serializer For Users Education 
 class EducationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,7 +31,7 @@ class EducationSerializer(serializers.ModelSerializer):
         portfolio_id=self.context['portfolio_id']
 
         return Education.objects.create(
-            portfolio_id=portfolio_id,
+            user_id=portfolio_id,
             **validated_data
         )
 
@@ -64,7 +58,7 @@ class SkillSerializer(serializers.ModelSerializer):
         portfolio_id=self.context['portfolio_id']
 
         return Skill.objects.create(
-            portfolio_id=portfolio_id,
+            user_id=portfolio_id,
             **validated_data
         )
 
@@ -92,7 +86,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         portfolio_id=self.context['portfolio_id']
 
         return Project.objects.create(
-            portfolio_id=portfolio_id,
+            user_id=portfolio_id,
             **validated_data
         )
         
@@ -109,6 +103,7 @@ class ContactSerializer(serializers.ModelSerializer):
             'email',
             'subject',
             'message',
+            'contact_no',
             'date'
         ] 
 
