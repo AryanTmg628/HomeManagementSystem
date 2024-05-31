@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/auth/',include('authentication.urls')),
     path('api/',include('journal.urls')),
     path('api/',include('portfolio.urls')),
+    path('api/',include('todo_list.urls')),
 ]
 
 
