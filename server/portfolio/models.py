@@ -33,8 +33,8 @@ class Education(models.Model):
     degree = models.CharField(max_length=255, blank=True, null=True)
     date_from=models.DateField()
     date_to=models.DateField()
-    portfolio=models.ForeignKey(
-        Portfolio,
+    user=models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='education'
     )
@@ -59,8 +59,8 @@ class Skill(models.Model):
             MaxValueValidator(100)
         ]
     )
-    portfolio=models.ForeignKey(
-        Portfolio,
+    user=models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='skill'
     )
@@ -81,8 +81,8 @@ class Project(models.Model):
     description=models.TextField()
     live_link=models.CharField(max_length=255, blank=True, null=True)
     github_link=models.CharField(max_length=255, blank=True, null=True)
-    portfolio=models.ForeignKey(
-        Portfolio,
+    user=models.ForeignKey(
+      settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='project'
     )
@@ -104,13 +104,19 @@ class Contact(models.Model):
     subject=models.CharField(max_length=255)
     message=models.TextField()
     date=models.DateField(auto_now_add=True)
+    contact_no=models.CharField(
+        max_length=10,
+        validators=[
+            RegexValidator(r'^\d{10}$', 'Contact number must be exactly 10 digits and numeric.'),
+        ]
+    )
 
 
     def __str__(self) -> str:
         """
         Returing String Representation of object 
         """
-        return self.title
+        return self.fullname
 
     
 
