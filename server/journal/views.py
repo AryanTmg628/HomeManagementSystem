@@ -1,14 +1,18 @@
 from .models import Journal,JournalImage
-from utils.response.response import CustomResponse as cr 
 from .serailizers import JournalSerailizer,JournalImageSerailizer
 
+from utils.response.response import CustomResponse as cr 
+from utils.exception.exception import CustomException as ce
+
+from django.http import Http404 
 
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import (
     HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT
+    HTTP_204_NO_CONTENT,
+    HTTP_404_NOT_FOUND
 )
 
 
@@ -36,22 +40,25 @@ class JournalViewSet(ModelViewSet):
         return {
             'user_id':self.request.user.id
         }
-
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-
-        return cr.success(
-            message="Successfully Created",
-            data=serializer.data,
-            status=HTTP_201_CREATED
-        )
-
     
+
+    def get_object(self):
+        """
+        Override get_object to handle non-existing objects
+        """
+        try:
+            return super().get_object()
+        except Http404:
+            raise ce(
+                message="Page Not found",
+                status=HTTP_404_NOT_FOUND
+            )
+        
+
     def list(self, request, *args, **kwargs):
+        """  
+        Over riding method for custom response  
+        """
         queryset = self.filter_queryset(self.get_queryset())
 
         page = self.paginate_queryset(queryset)
@@ -65,24 +72,37 @@ class JournalViewSet(ModelViewSet):
             )
 
 
+    def create(self, request, *args, **kwargs):
+        """  
+        Over riding method for custom response  
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        return cr.success(
+            message="Journal Successfully Created",
+            data=serializer.data,
+            status=HTTP_201_CREATED
+        )
+
+
     def retrieve(self, request, *args, **kwargs):
+        """  
+        Over riding method for custom response  
+        """
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return cr.success(
             data=serializer.data
             )
-
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return cr.success(
-            message="Successfully Deleted ",
-            status=HTTP_204_NO_CONTENT
-            )
-
     
+
     def update(self, request, *args, **kwargs):
+        """  
+        Over riding method for custom response  
+        """
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -93,9 +113,21 @@ class JournalViewSet(ModelViewSet):
             instance._prefetched_objects_cache = {}
 
         return cr.success(
-            message="Successfully Updated",
+            message="Journal Updated",
             data=serializer.data
         )
+
+
+    def destroy(self, request, *args, **kwargs):
+        """  
+        Over riding method for custom response  
+        """
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return cr.success(
+            message="Journal Successfully Deleted ",
+            status=HTTP_204_NO_CONTENT
+            )
     
 
 
@@ -109,13 +141,36 @@ class JournalImageViewSet(ModelViewSet):
 
     def get_queryset(self):
         journal_pk=self.kwargs['journal_pk']
+
+        if not Journal.objects.filter(id=journal_pk).exists():
+            raise ce(
+                message="Page Not found",
+                status=HTTP_404_NOT_FOUND
+            )
+
         journal_images=JournalImage.objects.filter(
             journal_id=journal_pk
         )
         return journal_images
     
 
+    def get_object(self):
+        """
+        Override get_object to handle non-existing objects
+        """
+        try:
+            return super().get_object()
+        except Http404:
+            raise ce(
+                message="Page Not found",
+                status=HTTP_404_NOT_FOUND
+            )
+    
+
     def list(self, request, *args, **kwargs):
+        """  
+        Over riding method for custom response  
+        """
         queryset = self.filter_queryset(self.get_queryset())
 
         page = self.paginate_queryset(queryset)
@@ -130,6 +185,9 @@ class JournalImageViewSet(ModelViewSet):
     
     
     def retrieve(self, request, *args, **kwargs):
+        """  
+        Over riding method for custom response  
+        """
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return cr.success(
