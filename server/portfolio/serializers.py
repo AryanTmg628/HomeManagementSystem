@@ -125,3 +125,20 @@ class PortfolioSerializer(serializers.ModelSerializer):
             'github_link',
             'contact_no'
         ]
+
+
+
+
+# ! Serailizer For Updating Users Portfolio
+class UpdatePortfolioSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Portfolio
+        fields = [
+            'image',
+            'description',
+            'location',
+            'instagram_link',
+            'github_link',
+            'contact_no'
+        ]

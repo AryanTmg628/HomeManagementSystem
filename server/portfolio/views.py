@@ -5,7 +5,8 @@ from .serializers import (
     EducationSerializer,
     SkillSerializer,
     ProjectSerializer,
-    ContactSerializer
+    ContactSerializer,
+    UpdatePortfolioSerializer
 )
 from .models import (
     Portfolio,
@@ -61,6 +62,8 @@ class PortfolioViewSet(ModelViewSet):
         """
         if self.action=="contact":
             return ContactSerializer
+        if self.request.method in ['PUT',"PATCH"]:
+            return UpdatePortfolioSerializer
         return PortfolioSerializer
     
 
