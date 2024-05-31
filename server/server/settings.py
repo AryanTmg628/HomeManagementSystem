@@ -20,7 +20,8 @@ ALLOWED_HOSTS = []
 PROJECT_APPS=[
     'authentication',
     'journal',
-    'portfolio'
+    'portfolio',
+    'todo_list'
 ]
 
 
