@@ -28,12 +28,13 @@ class EducationSerializer(serializers.ModelSerializer):
         """
         Overriding the create method
         """
-        portfolio_id=self.context['portfolio_id']
+        user_id=self.context['user_id']
 
         return Education.objects.create(
-            user_id=portfolio_id,
+            user_id=user_id,
             **validated_data
         )
+
 
 
 
@@ -49,16 +50,15 @@ class SkillSerializer(serializers.ModelSerializer):
             'level'
         ]
 
-
     
     def create(self, validated_data):
         """
         Overriding the create method
         """
-        portfolio_id=self.context['portfolio_id']
+        user_id=self.context['user_id']
 
         return Skill.objects.create(
-            user_id=portfolio_id,
+            user_id=user_id,
             **validated_data
         )
 
@@ -78,18 +78,17 @@ class ProjectSerializer(serializers.ModelSerializer):
         ]
 
 
-
     def create(self, validated_data):
         """
         Overriding the create method
         """
-        portfolio_id=self.context['portfolio_id']
+        user_id=self.context['user_id']
 
         return Project.objects.create(
-            user_id=portfolio_id,
+            user_id=user_id,
             **validated_data
-        )
-        
+        )        
+
 
 
 
@@ -110,14 +109,15 @@ class ContactSerializer(serializers.ModelSerializer):
 
 
 
-
 # ! Serializer For Users Portfolio 
 class PortfolioSerializer(serializers.ModelSerializer):
+    user=serializers.StringRelatedField()
     
     class Meta:
         model = Portfolio
         fields = [
             'pk',
+            'user',
             'image',
             'description',
             'location',
