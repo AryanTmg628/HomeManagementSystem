@@ -6,13 +6,10 @@ from rest_framework.serializers import ModelSerializer
 
 # ! Serializer For Task Model
 class TaskSerailizer(ModelSerializer):
-    user=serializers.StringRelatedField()
-
     class Meta:
         model=Task
         fields=[
             'id',
-            'user',
             'title',
             'description',
             'status',
