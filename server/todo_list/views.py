@@ -33,7 +33,8 @@ class TaskViewSet(ModelViewSet):
         """
         user_id=self.request.user.id
         return Task.objects.filter(
-            user_id=user_id
+            user_id=user_id,
+            status='COMPLETED'
         )
     
 
@@ -82,8 +83,38 @@ class TaskViewSet(ModelViewSet):
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
+
+        user=self.request.user 
+
+        # ! For Listing Pending Tasks 
+        pending_task=Task.objects.filter(
+            user=user,
+            status='PENDING',
+        )
+        pending_serializer=TaskSerailizer(
+            pending_task,
+            many=True
+        )
+
+        # ! For Listing Tasks InProgress 
+        in_progress=Task.objects.filter(
+            user=user,
+            status='IN_PROGRESS'
+        )
+        in_progress_serializer=TaskSerailizer(
+            in_progress,
+            many=True
+        )
+
+
+        data={
+            'COMPLETED':serializer.data,
+            'PENDING':pending_serializer.data,
+            'IN_PROGRESS':in_progress_serializer.data
+
+        }
         return cr.success(
-            data=serializer.data
+            data=data
         )
     
 
