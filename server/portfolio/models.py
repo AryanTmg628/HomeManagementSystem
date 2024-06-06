@@ -33,8 +33,8 @@ class Education(models.Model):
     degree = models.CharField(max_length=255, blank=True, null=True)
     date_from=models.DateField()
     date_to=models.DateField()
-    user=models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+    portfolio=models.ForeignKey(
+        Portfolio,
         on_delete=models.CASCADE,
         related_name='education'
     )
@@ -59,8 +59,8 @@ class Skill(models.Model):
             MaxValueValidator(100)
         ]
     )
-    user=models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+    portfolio=models.ForeignKey(
+        Portfolio,
         on_delete=models.CASCADE,
         related_name='skill'
     )
@@ -81,8 +81,8 @@ class Project(models.Model):
     description=models.TextField()
     live_link=models.CharField(max_length=255, blank=True, null=True)
     github_link=models.CharField(max_length=255, blank=True, null=True)
-    user=models.ForeignKey(
-      settings.AUTH_USER_MODEL,
+    portfolio=models.ForeignKey(
+        Portfolio,
         on_delete=models.CASCADE,
         related_name='project'
     )
